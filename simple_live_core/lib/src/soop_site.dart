@@ -36,11 +36,18 @@ class SoopSite extends LiveSite {
 
   String get _requestCookie => cookie.isNotEmpty ? cookie : globalCookie;
 
+  Map<String, dynamic> _toStringKeyMap(dynamic value) {
+    if (value is Map) {
+      return value.map((key, value) => MapEntry(key.toString(), value));
+    }
+    return {};
+  }
+
   Future<Map<String, dynamic>> _postPlayerApi(
     Map<String, String> data, {
     String? referer,
   }) async {
-    final jsonRes = await HttpClient.instance.postJson(
+    final jsonRes = _toStringKeyMap(await HttpClient.instance.postJson(
       _playerApiUrl,
       header: {
         ..._headers,
@@ -48,8 +55,15 @@ class SoopSite extends LiveSite {
       },
       data: data,
       formUrlEncoded: true,
-    ) as Map<String, dynamic>;
-    return jsonRes['CHANNEL'] as Map<String, dynamic>;
+    ));
+    final channel = jsonRes['CHANNEL'];
+    if (channel is Map) {
+      return _toStringKeyMap(channel);
+    }
+    return {
+      'RESULT': jsonRes['RESULT'] ?? -1,
+      'ERROR': channel?.toString() ?? jsonRes.toString(),
+    };
   }
 
   Future<String> _getCurrentBno(String bid) async {
@@ -142,11 +156,11 @@ class SoopSite extends LiveSite {
       'pageNo': page.toString(),
       'lang': 'ko_KR',
     };
-    final jsonRes = await HttpClient.instance.getJson(
+    final jsonRes = _toStringKeyMap(await HttpClient.instance.getJson(
       _liveListUrl,
       queryParameters: query,
       header: _headers,
-    ) as Map<String, dynamic>;
+    ));
     final broad = (jsonRes['broad'] as List? ?? [])
         .whereType<Map<String, dynamic>>()
         .map(_toRoomItem)
@@ -190,8 +204,8 @@ class SoopSite extends LiveSite {
   Future<List<LivePlayQuality>> getPlayQualites({
     required LiveRoomDetail detail,
   }) async {
-    final data = (detail.data is Map<String, dynamic>)
-        ? detail.data as Map<String, dynamic>
+    final data = (detail.data is Map)
+        ? _toStringKeyMap(detail.data)
         : await _getLiveInfo(detail.roomId);
     if (int.tryParse(data['RESULT']?.toString() ?? '') != 1) {
       return [];
@@ -220,8 +234,8 @@ class SoopSite extends LiveSite {
     try {
       final parts = detail.roomId.split('/');
       final bid = parts.first;
-      final liveInfo = (detail.data is Map<String, dynamic>)
-          ? detail.data as Map<String, dynamic>
+      final liveInfo = (detail.data is Map)
+          ? _toStringKeyMap(detail.data)
           : await _getLiveInfo(detail.roomId);
       final bno = liveInfo['BNO']?.toString() ??
           (parts.length > 1 ? parts[1] : '');
@@ -257,10 +271,10 @@ class SoopSite extends LiveSite {
           'broad_key': '$bno-common-$qualityName-hls',
         },
       );
-      final assignJson = await HttpClient.instance.getJson(
+      final assignJson = _toStringKeyMap(await HttpClient.instance.getJson(
         assignUri.toString(),
         header: _headers,
-      ) as Map<String, dynamic>;
+      ));
       final viewUrl = assignJson['view_url']?.toString() ?? '';
       if (viewUrl.isEmpty) {
         return LivePlayUrl(
