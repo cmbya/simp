@@ -1,0 +1,47 @@
+name: Build Flutter Windows
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        working-directory: simple_live_app
+        shell: pwsh
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Flutter version
+        run: flutter --version
+
+      - name: Enable Windows desktop
+        run: flutter config --enable-windows-desktop
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build Windows release
+        run: flutter build windows --release
+
+      - name: Prepare portable package
+        run: |
+          $outDir = "release-windows-x64"
+          New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+          Copy-Item "build/windows/x64/runner/Release/*" -Destination $outDir -Recurse -Force
+
+      - name: Upload portable package
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-portable-x64
+          path: simple_live_app/release-windows-x64
