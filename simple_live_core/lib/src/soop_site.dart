@@ -73,10 +73,10 @@ class SoopSite extends LiveSite {
         header: _headers,
       );
       final patterns = [
-        RegExp(r'nBroadNo\s*[=:]\s*[\"\']?(\d+)', caseSensitive: false),
-        RegExp(r'broad_no[\"\']?\s*[:=]\s*[\"\']?(\d+)', caseSensitive: false),
-        RegExp(r'BNO[\"\']?\s*[:=]\s*[\"\']?(\d+)', caseSensitive: false),
-        RegExp(r'bno[\"\']?\s*[:=]\s*[\"\']?(\d+)', caseSensitive: false),
+        RegExp(r"""nBroadNo\s*[=:]\s*["\']?(\d+)""", caseSensitive: false),
+        RegExp(r"""broad_no["\']?\s*[:=]\s*["\']?(\d+)""", caseSensitive: false),
+        RegExp(r"""BNO["\']?\s*[:=]\s*["\']?(\d+)""", caseSensitive: false),
+        RegExp(r"""bno["\']?\s*[:=]\s*["\']?(\d+)""", caseSensitive: false),
       ];
       for (final pattern in patterns) {
         final match = pattern.firstMatch(html);
