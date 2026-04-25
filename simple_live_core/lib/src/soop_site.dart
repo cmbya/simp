@@ -72,10 +72,20 @@ class SoopSite extends LiveSite {
         '$_playHost/$bid',
         header: _headers,
       );
-      return RegExp(r'window\.nBroadNo\s*=\s*(\d+);')
-              .firstMatch(html)
-              ?.group(1) ??
-          '';
+      final patterns = [
+        RegExp(r'nBroadNo\s*[=:]\s*[\"\']?(\d+)', caseSensitive: false),
+        RegExp(r'broad_no[\"\']?\s*[:=]\s*[\"\']?(\d+)', caseSensitive: false),
+        RegExp(r'BNO[\"\']?\s*[:=]\s*[\"\']?(\d+)', caseSensitive: false),
+        RegExp(r'bno[\"\']?\s*[:=]\s*[\"\']?(\d+)', caseSensitive: false),
+      ];
+      for (final pattern in patterns) {
+        final match = pattern.firstMatch(html);
+        final bno = match?.group(1) ?? '';
+        if (bno.isNotEmpty) {
+          return bno;
+        }
+      }
+      return '';
     } catch (_) {
       return '';
     }
