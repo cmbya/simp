@@ -163,9 +163,11 @@ class ParseController extends GetxController {
       // 注意：这里的 'twitch' 必须和你之前在 sites.dart 里填写的名字一模一样
       return [id, Sites.allSites['twitch']!];
     }
-    if (url.contains("sooplive.com") || url.contains("afreecatv.com")) {
+    if (url.contains("sooplive.com") ||
+        url.contains("sooplive.co.kr") ||
+        url.contains("afreecatv.com")) {
       var regExp = RegExp(
-        r"play\.(?:sooplive\.com|sooplive\.co\.kr|afreecatv\.com)/([\w]+)(?:/(\d+))?",
+        r"(?:play\.)?(?:sooplive\.com|sooplive\.co\.kr|afreecatv\.com)/([\w]+)(?:/(\d+))?",
       );
       var match = regExp.firstMatch(url);
       var bid = match?.group(1) ?? "";
