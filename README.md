@@ -26,6 +26,10 @@
 
 - 抖音直播
 
+- SOOP
+
+- Twitch
+
 ## APP支持平台
 
 - [x] Android
