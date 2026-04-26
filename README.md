@@ -1,4 +1,6 @@
 > ### ⚠ 本项目不提供Release安装包，请自行编译后运行测试。
+> 复制自xiaoyaocz/dart_simple_live，[https://github.com/xiaoyaocz/AllLive](https://github.com/xiaoyaocz/dart_simple_live)
+在openclaw的帮助下新增了soop和twitch，目前满足个人使用需求。因为初学者不懂代码，就使用openclaw把代码下载到本地然后让它修改的，修改好后太多了，所以我只好新建一个库来放。
 
 
 <p align="center">
