@@ -12,6 +12,7 @@ export 'src/danmaku/bilibili_danmaku.dart';
 export 'src/danmaku/douyu_danmaku.dart';
 export 'src/danmaku/huya_danmaku.dart';
 export 'src/danmaku/douyin_danmaku.dart';
+export 'src/danmaku/twitch_danmaku.dart';
 export 'src/twitch_site.dart';
 export 'src/soop_site.dart';
 
